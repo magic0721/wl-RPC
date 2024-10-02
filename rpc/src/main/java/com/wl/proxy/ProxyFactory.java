@@ -19,22 +19,29 @@ public class ProxyFactory {
     public static <T> T getProxy(Class interfaceClass){
         //用户配置
 
-        Object proxyInstance = Proxy.newProxyInstance(interfaceClass.getClassLoader(), new Class[]{interfaceClass}, new InvocationHandler() {
+        Object proxyInstance = Proxy.newProxyInstance(interfaceClass.getClassLoader(),
+                new Class[]{interfaceClass}, new InvocationHandler() {
             @Override
             public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
+//                proxy：代表被代理的对象。
+//                method：表示正在调用的方法的元信息。
+//                args：传递给方法的实际参数。
 
-                String mock = System.getProperty("mock");
-                if(mock != null && mock.startsWith("return:")){
-                    String result = mock.replace("return" , "");
-                    return result;
-                }
+//                开启mock，则出现waitProvider ， 服务端写好，关闭
+//                String mock = System.getProperty("mock");
+//                if(mock != null && mock.startsWith("return:")){
+//                    String result = mock.replace("return" , "");
+//                    return result;
+//                }
 
+                //往服务端发送的信息，要调用的接口名，方法名，方法参数类型，方法参数
                 Invocation invocation = new Invocation(interfaceClass.getName() , method.getName() ,
                         method.getParameterTypes() , args);
 
+                //客户端对象
                 HttpClient httpClient = new HttpClient();
 
-                //服务发现
+                //服务发现，从远程注册中心发现服务列表
                 List<URL> list = MapRemoteRegister.get(interfaceClass.getName());
 
 
@@ -51,7 +58,10 @@ public class ProxyFactory {
                     URL url = Loadbalance.random(list);
                     invokedUrls.add(url);
                     try {
+                        //向服务端发送请求
                         result = httpClient.send(url.getHostname() , url.getPort(), invocation);
+                        break;
+
                     } catch (Exception e) {
                         if(max-- != 0)continue;
                         return "服务报错";

@@ -18,6 +18,7 @@ public class HttpServerHandler {
         //处理请求--》接口 方法
 
         try {
+            //读取输入流，并转化为Invocation对象
             Invocation invocation = (Invocation) new ObjectInputStream(req.getInputStream()).readObject();
             String interfaceName = invocation.getInterfaceName();
 

@@ -16,6 +16,18 @@ public class HttpClient {
     public String send(String hostname , Integer port , Invocation invocation) throws IOException {
         //用户的配置
 
+//        创建URL对象用于指定目标服务器地址。
+//        获取HTTP连接并设置为POST请求。
+//        允许输出以发送数据。
+//        获取连接输出流。
+//        创建对象输出流以序列化对象。
+//        将Invocation对象写入输出流。
+//        刷新并关闭输出流。
+//        从连接获取输入流读取服务器响应。
+//        将输入流转换为字符串作为结果返回。
+//        捕获URL异常但未处理。
+//        捕获并重新抛出IO异常。
+
         try {
 
             URL url = new URL("http", hostname, port, "/");
